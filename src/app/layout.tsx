@@ -10,6 +10,14 @@ const manrope = Manrope({
 const lora = Lora({
   variable: "--font-lora",
   subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const loraItalic = Lora({
+  variable: "--font-lora-italic",
+  subsets: ["latin", "cyrillic"],
+  style: "italic",
+  weight: ["500", "600"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -31,9 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ru"
-      className={`${manrope.variable} ${lora.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${lora.variable} ${loraItalic.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }
