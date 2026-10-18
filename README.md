@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Кварта — свежеобжаренный кофе из Минска
 
-## Getting Started
+Тестовое задание: лендинг вымышленной минской обжарки «Кварта» с работающей формой заявки. Цель — заявка на подписку или разовый заказ, менеджер перезванивает.
 
-First, run the development server:
+**Стек:** Next.js 16 (App Router, React 19), Tailwind CSS v4, TypeScript, Turso (SQLite), Telegram Bot API. Хостинг — Vercel.
+
+## Запуск
 
 ```bash
+npm install
+cp .env.example .env.local   # подставить реальные ключи
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Переменные окружения:
+- `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN` — хранение заявок (обязательно на проде);
+- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` — дублирование заявок в бот (опционально);
+- `NEXT_PUBLIC_SITE_URL` — канонический URL для OG/canonical/sitemap.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Форма заявки
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`POST /api/lead`: серверная валидация (имя, белорусский номер), анти-дубль по номеру в течение 10 минут (включая двойной клик), UTM-атрибуция (`utm_source/medium/campaign/content/term`, `referrer`, `landing_page`), понятная ошибка при сбое.
 
-## Learn More
+После того, как юзер успешно заполнил и отправил заявку: она записывается в БД, а также информация по вновь отправленной заявке дублируется в Telegram-боте "Кварта: Заявки" (@kvarta_zayavki_bot)
 
-To learn more about Next.js, take a look at the following resources:
+**Хранение — Turso (SQLite по HTTP).** Vercel (serverless) не имеет постоянного диска, поэтому файл/SQLite в `/tmp` терялись бы между запросами; Turso даёт SQLite-совместимость и что немаловажно - он бесплатный :) . Локально, без env-переменных, заявки пишутся в `.data/leads.json` — для разработки.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Допущения
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Телефон — `+375` + 9 цифр (двузначный код оператора + 7 цифр).
+- UTM собирается на клиенте из `window.location` и `document.referrer` и уходит вместе с заявкой.
+- Telegram-дубль включается наличием env-переменных; сбой бота не ломает отправку заявки.
 
-## Deploy on Vercel
+## Что делал сам, а что ИИ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Основной код написал ИИ (использовал OpenCode, различные модели в зависимости от этапа и задач, которые на данном этапе выполнялись): дизайн-систему, секции, форму, API и хранилище, Telegram-дубль, SEO/OG. Я задавал направление и принимал решения: выбор Turso, создание БД и бота, требования к дизайну, правила валидации телефона; создавал репозиторий, вручную коммитил по этапам и задеплоил на Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Где ИИ ошибся и как я это заметил
+
+- Первая версия дизайна вышла скучной и шаблонной — попросил переделать, после чего появился цельный стиль.
+- Скролл: ИИ выставил огромный `scroll-margin`, из-за чего футер и кнопки скроллили мимо секции — заметил на мобильном.
+- Telegram: уведомления не приходили — ИИ молча глотал ошибки API, а в env стоял ID самого бота вместо моего `chat_id`.
+- OG-картинка пропала после передеплоя: URL был захардкожен на preview-адрес — переделал на `VERCEL_URL`.
+- Lighthouse ИИ сначала трактовал по dev-отчёту — реальные цифры снял я на задеплоенном сайте.
+
+## Что не успел / сделал бы иначе
+
+- Юнит-тесты на валидацию и анти-дубль.
+- Honeypot/капча и более жёсткий rate-limit от спама.
+- Кастомный домен вместо автоопределения URL через `VERCEL_URL`.
