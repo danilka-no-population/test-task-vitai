@@ -11,7 +11,7 @@ import {
   LEAD_INTEREST_EVENT,
   type LeadPayload,
 } from "@/lib/lead";
-import { normalizeBelarusianPhone } from "@/lib/phone";
+import { formatPhoneInput, normalizeBelarusianPhone } from "@/lib/phone";
 import { CONTACTS } from "@/lib/site";
 
 const INTERESTS: Interest[] = ["subscription", "one-time", "question"];
@@ -67,7 +67,7 @@ export default function LeadForm() {
       next.name = "Подскажите, как к вам обращаться";
     }
     if (!normalizeBelarusianPhone(phone)) {
-      next.phone = "Введите белорусский номер, например +375 29 000-00-00";
+      next.phone = "Введите номер полностью: +375 29 123-45-67";
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -216,7 +216,9 @@ export default function LeadForm() {
                         autoComplete="tel"
                         inputMode="tel"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) =>
+                          setPhone(formatPhoneInput(e.target.value))
+                        }
                         placeholder="+375 29 000-00-00"
                         className={inputClass}
                         aria-invalid={Boolean(errors.phone)}
