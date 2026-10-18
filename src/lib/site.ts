@@ -1,6 +1,6 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://test-task-vitai-61l5e6soe-yazvinski.vercel.app";
+  "https://test-task-vitai-biv0cnwxy-yazvinski.vercel.app";
 
 export type Product = {
   id: string;
