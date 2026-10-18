@@ -11,20 +11,20 @@ const manrope = Manrope({
 const lora = Lora({
   variable: "--font-lora",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["600"],
 });
 
 const loraItalic = Lora({
   variable: "--font-lora-italic",
   subsets: ["latin", "cyrillic"],
   style: "italic",
-  weight: ["500", "600"],
+  weight: ["600"],
 });
 
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "600"],
 });
 
 const TITLE = "Кварта — свежеобжаренный кофе из Минска";
