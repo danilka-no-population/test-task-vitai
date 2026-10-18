@@ -74,9 +74,9 @@ export const CONTACTS = {
   addressNote: "самовывоз",
   hoursWeekday: "пн–пт 8:00–20:00",
   hoursWeekend: "сб–вс 10:00–18:00",
-  phone: "+375 29 123-45-67",
+  phone: "+375291234567",
   phoneHref: "tel:+375291234567",
-  instagram: "https://instagram.com/kvarta.coffee",
+  instagram: "https://instagram.com",
 };
 
 export const FREE_DELIVERY_FROM = 50;
