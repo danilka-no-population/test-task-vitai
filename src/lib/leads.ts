@@ -98,7 +98,7 @@ async function findInJson(phone: string, since: string): Promise<Lead | null> {
   return leads.find((l) => l.phone === phone && l.created_at >= since) ?? null;
 }
 
-export async function saveLead(input: LeadPayload): Promise<void> {
+export async function saveLead(input: LeadPayload): Promise<Lead> {
   const lead = buildLead(input);
   const db = getDb();
 
@@ -126,10 +126,11 @@ export async function saveLead(input: LeadPayload): Promise<void> {
         lead.created_at,
       ],
     });
-    return;
+    return lead;
   }
 
   await saveToJson(lead);
+  return lead;
 }
 
 export async function findRecentByPhone(

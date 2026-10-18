@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { Interest } from "@/lib/lead";
 import { findRecentByPhone, saveLead } from "@/lib/leads";
 import { normalizeBelarusianPhone } from "@/lib/phone";
+import { notifyLead } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await saveLead({
+    const lead = await saveLead({
       name,
       phone,
       interest,
@@ -67,6 +68,8 @@ export async function POST(request: Request) {
       referrer: cleanString(body.referrer),
       landing_page: cleanString(body.landing_page),
     });
+
+    await notifyLead(lead);
   } catch (error) {
     console.error("[lead] failed to save", error);
     return NextResponse.json(
