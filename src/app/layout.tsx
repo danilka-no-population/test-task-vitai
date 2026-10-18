@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: "/opengraph-image",
+        url: "https://test-task-vitai.vercel.app/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Кварта — свежеобжаренный кофе из Минска",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/opengraph-image"],
+    images: ["https://test-task-vitai.vercel.app/opengraph-image"],
   },
   robots: {
     index: true,
